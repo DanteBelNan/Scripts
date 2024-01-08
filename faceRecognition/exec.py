@@ -1,28 +1,40 @@
 import cv2
-import pathlib
+import numpy as np
 
-cascade_path = pathlib.Path(cv2.__file__).parent.absolute() / "data/haarcascade__frontalface_default.xml"
+image = cv2.imread("faceRecognition/photo.jpg")
 
-clf = cv2.CascadeClassifier(str(cascade_path))
+detector = cv2.CascadeClassifier("faceRecognition/haarcascade_frontalface_alt.xml")
 
-camera = cv2.VideoCapture(0)
+capture = cv2.VideoCapture(0)
 
 while True:
-    _, frame = camera.read()
-    gray = cv2.cvtColor(frame, cv2.COLOR_BAYER_BG2GRAY)
-    faces = clf.detectMultiScale(
-        gray,
-        scaleFactor=1.1,
-        minNeighbors=3,
-        minSize=(30 ,30),
-        flags=cv2.CASCADE_SCALE_IMAGE
-    )
+    ret, frame = capture.read()
+    #capture.read()
+    #frame = capture.get()
 
-    for (x, y, width, height) in faces:
-        cv2.rectangle(frame, (x,y), (x+width, y+height), (255,255,0), 2)
-        cv2.imshow("Faces", frame)
-        if cv2.waitKey(1) == ord("q"):
+    faces = detector.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+    if faces:
+        face = faces[0]
+        points = face[:, :2]
+
+        points = np.array(points, dtype="int")
+
+        roi = frame[points[1]:points[3],points[0]:points[2]]
+
+        similarity = cv2.matchTemplate(roi, image, cv2.TM_CCOEFF_NORMED)
+
+        if similarity > 0.9:
+            print("Person detected.")
+        else:
+            print("Person not found.")
+
+        cv2.imshow("Frame", frame)
+
+        k = cv2.waitKey(1)
+        if k == 27:
             break
-        
-camera.release()
+capture.release()
+
+# Destruir todas las ventanas.
 cv2.destroyAllWindows()
