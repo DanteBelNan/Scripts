@@ -1,0 +1,28 @@
+[
+    {
+      "nombre": "MATERIA1",
+      "id": "ID1",
+      "req_apr": [],
+      "req_reg": [],
+      "anual": false,
+      "hs": 8
+    },
+    {
+      "nombre": "MATERIA2",
+      "id": "ID2",
+      "req_apr": ["ID1"],
+      "req_reg": [],
+      "anual": true,
+      "hs": 8
+    },
+    {
+      "nombre": "Programación",
+      "id": "PRO101",
+      "req_apr": ["ID1", "ID2"],
+      "req_reg": ["ID2"],
+      "anual": false,
+      "hs": 8
+    }
+
+  ]
+  
