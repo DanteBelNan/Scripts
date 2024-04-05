@@ -31,7 +31,7 @@ class Carrera:
     def loadMaterias(self):
         self.materias = []
         try:
-            with open("materias/materias.json", "r") as file:
+            with open("PlanCarrera/materias.json", "r") as file:
                 materias_json = json.load(file)
 
             for mat_json in materias_json:
@@ -44,6 +44,7 @@ class Carrera:
                     mat_json["anual"],
                     mat_json["hs"]
                 )
+                #materia = Materia(mat_json)
                 self._addMateria(materia)
             
         except Exception as error:
