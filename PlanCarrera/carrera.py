@@ -4,6 +4,8 @@ import json
 class Carrera:
     def __init__(self, name="Ingenieria en Sistemas"):
         self.name = name
+        self.materias = []
+        self._loadMaterias()
 
     def _addMateria(self, materia=[]):
         if(len(self.materias) > 0):
@@ -28,7 +30,7 @@ class Carrera:
         self.materias.append(materia)
 
 
-    def loadMaterias(self):
+    def _loadMaterias(self):
         self.materias = []
         try:
             with open("PlanCarrera/materias.json", "r") as file:
@@ -39,8 +41,8 @@ class Carrera:
                 materia = Materia(
                     mat_json["name"],
                     mat_json["id"],
-                    mat_json["req_apr"],
                     mat_json["req_reg"],
+                    mat_json["req_apr"],
                     mat_json["anual"],
                     mat_json["hs"]
                 )
@@ -53,5 +55,45 @@ class Carrera:
     def showMaterias(self):
         for materia in self.materias:
             print(materia)
+
+    def searchMateria(self,nombreMateria):
+        for materia in self.materias:
+            if materia.name == nombreMateria:
+                idMateria = materia.id
+
+        regs = self.getRegReg(idMateria)
+        aprs = self.getRegApr(idMateria)
+
+
+                    
+    def getReqReg(self,idMateria):
+        regs = []
+
+        for materia in self.materias:
+            if materia.id == idMateria:
+                regs += materia.req_reg  
+                pseudoregs = []
+                for reg in regs:
+                    pseudoregs += self.getReqReg(reg)
+                
+                regs += pseudoregs
+        regs = list(set(regs)) # por algun tipo de razon magica, elimina los duplicados.
+        return regs
+    
+    def getReqApr(self,idMateria):
+        regs = []
+
+        for materia in self.materias:
+            if materia.id == idMateria:
+                regs += materia.req_reg  
+                pseudoregs = []
+                for reg in regs:
+                    pseudoregs += self.getReqApr(reg)
+                
+                regs += pseudoregs
+        regs = list(set(regs)) # por algun tipo de razon magica, elimina los duplicados.
+        return regs
+
+                
 
     
